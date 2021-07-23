@@ -14,20 +14,20 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 
 @Configuration
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
-    public UserDetailsService uds() {
-        UserDetailsManager udm = new InMemoryUserDetailsManager();
+    public UserDetailsService userDetailsService() {
+        UserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
 
         UserDetails user = User.withUsername("john")
                 .password("12345")
                 .authorities("read")
                 .build();
 
-        udm.createUser(user);
+        userDetailsManager.createUser(user);
 
-        return udm;
+        return userDetailsManager;
     }
 
     @Bean
@@ -35,6 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return NoOpPasswordEncoder.getInstance();
     }
 
+    @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
