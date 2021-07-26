@@ -7,7 +7,7 @@ CREATE SEQUENCE iam.user_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775
 CREATE TABLE IF NOT EXISTS iam.user (
     id              INT NOT NULL DEFAULT nextval('iam.user_id_seq'::regclass),
     username        VARCHAR(45) NOT NULL,
-    password        VARCHAR(45) NOT NULL,
+    password        VARCHAR(72) NOT NULL,
     PRIMARY KEY (id));
 CREATE UNIQUE INDEX IF NOT EXISTS username_idx ON iam.user(username);
 
@@ -30,7 +30,7 @@ CREATE SEQUENCE iam.client_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 92233720368547
 CREATE TABLE IF NOT EXISTS iam.client (
     id                  INT NOT NULL DEFAULT nextval('iam.client_id_seq'::regclass),
     client              VARCHAR(45) NOT NULL,
-    secret              VARCHAR(45) NOT NULL,
+    secret              VARCHAR(72) NOT NULL,
     redirect_uri        VARCHAR(45) NOT NULL,
     PRIMARY KEY (id));
 
@@ -42,7 +42,7 @@ CREATE SEQUENCE iam.client_grant_type_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 922
 CREATE TABLE IF NOT EXISTS iam.client_grant_type (
     id                  INT NOT NULL DEFAULT nextval('iam.client_grant_type_id_seq'::regclass),
     grant_type          VARCHAR(45) NOT NULL,
-    client_id           VARCHAR(45) NOT NULL,
+    client_id           INT NOT NULL,
     PRIMARY KEY (id));
 
 --- iam.scope
@@ -53,5 +53,5 @@ CREATE SEQUENCE iam.scope_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 922337203685477
 CREATE TABLE IF NOT EXISTS iam.scope (
      id                  INT NOT NULL DEFAULT nextval('iam.scope_id_seq'::regclass),
      scope               VARCHAR(45) NOT NULL,
-     client_id           VARCHAR(45) NOT NULL,
+     client_id           INT NOT NULL,
      PRIMARY KEY (id));

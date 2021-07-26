@@ -15,6 +15,7 @@ import procceed.sw.iam.authservice.entities.Client;
 import procceed.sw.iam.authservice.services.ClientService;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
@@ -55,8 +56,8 @@ class ClientControllerTest {
     }
 
     private List<Client> twoClients() {
-        return List.of(Client.builder().client("client1").secret("secret1").clientGrantType(List.of()).scopes(List.of()).build(),
-                        Client.builder().client("client2").secret("secret2").clientGrantType(List.of()).scopes(List.of()).build());
+        return List.of(Client.builder().client("client1").secret("secret1").clientGrantType(Set.of()).scopes(Set.of()).build(),
+                        Client.builder().client("client2").secret("secret2").clientGrantType(Set.of()).scopes(Set.of()).build());
     }
 
     private Client toCreateClient() {

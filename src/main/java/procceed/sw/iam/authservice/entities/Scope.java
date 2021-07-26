@@ -1,10 +1,11 @@
 package procceed.sw.iam.authservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +16,7 @@ public class Scope {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String scope;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;

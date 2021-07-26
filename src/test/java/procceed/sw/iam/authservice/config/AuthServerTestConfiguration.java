@@ -8,20 +8,14 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import procceed.sw.iam.authservice.repositories.ClientRepository;
-import procceed.sw.iam.authservice.services.JpaClientDetailsService;
 
-
-@Profile("!test")
+@Profile("test")
 @RequiredArgsConstructor
 @Configuration
 @EnableAuthorizationServer
-public class AuthServerConfiguration extends AuthorizationServerConfigurerAdapter {
-
-    private final ClientRepository clientRepository;
+public class AuthServerTestConfiguration extends AuthorizationServerConfigurerAdapter {
 
     private final AuthenticationManager authenticationManager;
 
@@ -31,9 +25,22 @@ public class AuthServerConfiguration extends AuthorizationServerConfigurerAdapte
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        ClientDetailsService service = new JpaClientDetailsService(clientRepository);
-
-        clients.withClientDetails(service);
+        clients.inMemory()
+                .withClient("client1")
+                .secret("secret1")
+                .authorizedGrantTypes("authorization_code", "refresh_token")
+                .scopes("read")
+                .redirectUris("http://localhost:9090/home")
+                .and()
+                .withClient("client2")
+                .secret("secret2")
+                .authorizedGrantTypes("password", "refresh_token")
+                .scopes("read")
+                .and()
+                .withClient("client3")
+                .secret("secret3")
+                .authorizedGrantTypes("client_credentials")
+                .scopes("read");
     }
 
     @Override

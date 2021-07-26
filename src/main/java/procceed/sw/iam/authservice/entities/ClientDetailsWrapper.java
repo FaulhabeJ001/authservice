@@ -1,6 +1,8 @@
 package procceed.sw.iam.authservice.entities;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
 
 import java.util.Collection;
@@ -8,13 +10,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SecurityClient implements ClientDetails {
+@RequiredArgsConstructor
+public class ClientDetailsWrapper implements ClientDetails {
 
     private final Client client;
-
-    public SecurityClient(Client client) {
-        this.client = client;
-    }
 
     @Override
     public String getClientId() {
@@ -38,29 +37,27 @@ public class SecurityClient implements ClientDetails {
 
     @Override
     public boolean isScoped() {
-        return false;
+        return true;
     }
 
     @Override
     public Set<String> getScope() {
-        return null;
+        return client.getScopes().stream().map(s -> s.getScope()).collect(Collectors.toSet());
     }
 
     @Override
     public Set<String> getAuthorizedGrantTypes() {
-        return client.getClientGrantType().stream()
-                .map(grant -> grant.getGrantType())
-                .collect(Collectors.toSet());
+        return client.getClientGrantType().stream().map(gt -> gt.getGrantType()).collect(Collectors.toSet());
     }
 
     @Override
     public Set<String> getRegisteredRedirectUri() {
-        return Set.of(client.getRedirectUri());
+        return null;
     }
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        return null;
+        return client.getScopes().stream().map(s -> new SimpleGrantedAuthority(s.getScope())).collect(Collectors.toSet());
     }
 
     @Override

@@ -15,6 +15,7 @@ import procceed.sw.iam.authservice.repositories.ClientRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -41,7 +42,7 @@ class ClientServiceTest {
 
         clientService.createClient(client);
 
-        assertEquals(client.getScopes().get(0).getClient(), client);
+        assertTrue(client.getScopes().stream().allMatch(scope -> scope.getClient().equals(client)));
 
         verify(clientRepository, times(1)).save(client);
         verify(passwordEncoder, times(1)).encode(anyString());
@@ -68,12 +69,12 @@ class ClientServiceTest {
     }
 
     private List<Client> twoClients() {
-        return List.of(Client.builder().client("client1").secret("secret1").clientGrantType(List.of()).scopes(List.of()).build(),
-                Client.builder().client("client2").secret("secret2").clientGrantType(List.of()).scopes(List.of()).build());
+        return List.of(Client.builder().client("client1").secret("secret1").clientGrantType(Set.of()).scopes(Set.of()).build(),
+                Client.builder().client("client2").secret("secret2").clientGrantType(Set.of()).scopes(Set.of()).build());
     }
 
     private Client toCreateClient() {
-        return Client.builder().client("client1").secret("secret1").scopes(List.of(
+        return Client.builder().client("client1").secret("secret1").scopes(Set.of(
                 Scope.builder().scope("scope1").build()
         )).build();
     }

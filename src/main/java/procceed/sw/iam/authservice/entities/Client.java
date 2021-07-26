@@ -1,17 +1,14 @@
 package procceed.sw.iam.authservice.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-@Data
+@Getter @Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 @Entity
 @Table(name = "client")
 public class Client {
@@ -21,8 +18,25 @@ public class Client {
     private String client;
     private String secret;
     private String redirectUri;
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<ClientGrantType> clientGrantType;
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Scope> scopes;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    Set<ClientGrantType> clientGrantType;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    Set<Scope> scopes;
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(client);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Client other = (Client) obj;
+        return Objects.equals(client, other.getClient());
+    }
 }
