@@ -1,28 +1,35 @@
 package procceed.sw.iam.authservice.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import procceed.sw.iam.authservice.repositories.UserRepository;
-import procceed.sw.iam.authservice.services.JpaUserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 
-@Profile("!test")
-@RequiredArgsConstructor
+@Profile("test")
 @Configuration
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    private final UserRepository userRepository;
+public class WebSecurityTestConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
-    public UserDetailsService jpaUserDetailsService() {
-        return new JpaUserDetailsService(userRepository);
+    public UserDetailsService inMemoryUserDetailsService() {
+        UserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
+
+        UserDetails user = User.withUsername("john")
+                .password("12345")
+                .authorities("read")
+                .build();
+
+        userDetailsManager.createUser(user);
+
+        return userDetailsManager;
     }
 
     @Bean
@@ -50,5 +57,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
     }
-
 }
